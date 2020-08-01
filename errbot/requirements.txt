@@ -1,5 +1,5 @@
 dataclasses>=0.6
-errbot==6.1.0
+errbot==6.1.4
 slackclient>=1.0.5,<2.0
 PyGithub==1.43.7
 pyhcl==0.3.12
