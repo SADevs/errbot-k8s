@@ -1,12 +1,17 @@
-FROM python:3.7-slim
+FROM python:3.8-slim
 MAINTAINER andrew.the.techie@gmail.com
-LABEL description="Docker image for running errbot in kubernetes"
+LABEL description="Docker image for running errbot in kubernetes, customized for the SA Devz"
 
 COPY ./errbot /errbot
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential libssl-dev libffi-dev && \
-    pip3 install --no-cache-dir -r /errbot/requirements.txt && \
+    python -m venv /errbot/venv && \
+    . /errbot/venv/bin/activate && \
+    /errbot/venv/bin/pip install --no-cache-dir -r /errbot/requirements.txt && \
+    /errbot/venv/bin/pip install --no-cache-dir -r /errbot/plugin-requirements.txt && \
+    rm -rf /errbot/*requirements.txt && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /errbot
-CMD errbot -c config.py
+
+ENTRYPOINT ["/errbot/run.sh"]

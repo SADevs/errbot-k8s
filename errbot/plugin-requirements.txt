@@ -1,0 +1,4 @@
+# add any requirements for plugins in here and they'll get installed in the base docker image to speed up bot start time
+errbot[slack]
+python-decouple
+wrapt

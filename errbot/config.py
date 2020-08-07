@@ -1,5 +1,9 @@
 import os
+import collections
+import json
 import logging
+
+from typing import Dict
 
 # https://raw.githubusercontent.com/errbotio/errbot/master/errbot/config-template.py
 
@@ -8,6 +12,9 @@ BACKEND = os.environ.get("BOT_MODE", "Slack")
 BOT_IDENTITY = {
     'token': os.environ.get("SLACK_TOKEN")
 }
+
+CORE_PLUGINS = ('ACLs', 'Help', 'Utils')
+
 BOT_DIR = os.environ.get("BOT_DIR", r'/errbot')
 BOT_DATA_DIR = os.path.join(BOT_DIR, "data")
 os.makedirs(BOT_DATA_DIR, exist_ok=True)
@@ -49,3 +56,29 @@ MESSAGE_SIZE_LIMIT = int(os.environ.get("MESSAGE_SIZE_LIMIT", "4000"))
 DEFAULT_THREADED = ["help", "about", "status"]
 USER_THREADED = os.environ.get("THREADED_COMMANDS", "").split(",")
 DIVERT_TO_THREAD = tuple(DEFAULT_THREADED + USER_THREADED)
+
+
+ac_file = os.environ.get("ACCESS_CONTROLS_FILE", "")
+ac_defaults_file = os.environ.get("ACCESS_CONTROLS_DEFAULT_FILE", "")
+
+def _load_ac_from_json_file(file_path: str) -> Dict:
+    with open(file_path, 'r') as file:
+        ac_json = json.load(file)
+    # step through our json and convert any comma separated lists into tuples
+    for command, config in ac_json.items():
+        for directive, value in config.items():
+            if directive in ('allowusers', 'denyusers', 'allowrooms', 'denyrooms'):
+                ac_json[command][directive] = tuple(value.split(','))
+    return ac_json
+
+if ac_file != "":
+    ACCESS_CONTROLS = _load_ac_from_json_file(ac_file)
+
+if ac_defaults_file != "":
+    ACCESS_CONTROLS_DEFAULTS = _load_ac_from_json_file(ac_defaults_file)
+
+# Instead of using the Errbot plugin manager, implement our own
+# REPOS_LIST is used by the bootstrap script that gets called on bot startup to clone down our repos out of band
+# before errbot gets started
+# PLUGIN_REPOS should be a string like "repo-name,repo-url,branch;repo2-name,repo2-url,branch;"
+REPOS_LIST = os.environ.get("PLUGIN_REPOS", "").rstrip(";").split(";")
