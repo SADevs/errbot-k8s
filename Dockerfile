@@ -10,7 +10,8 @@ RUN apt-get update && \
     /errbot/venv/bin/pip install --no-cache-dir -r /errbot/requirements.txt && \
     /errbot/venv/bin/pip install --no-cache-dir -r /errbot/plugin-requirements.txt && \
     rm -rf /errbot/*requirements.txt && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    chmod +x /errbot/run.sh
 
 WORKDIR /errbot
 
