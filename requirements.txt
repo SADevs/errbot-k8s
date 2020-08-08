@@ -1,0 +1,2 @@
+errbot==6.1.4
+delegator.py>=0.1.1
