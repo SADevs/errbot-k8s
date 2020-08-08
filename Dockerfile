@@ -15,4 +15,4 @@ RUN apt-get update && \
 COPY ./errbot /errbot
 WORKDIR /errbot
 
-ENTRYPOINT ["/errbot/run.sh"]
+ENTRYPOINT ["bash", "/errbot/run.sh"]
