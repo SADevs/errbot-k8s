@@ -2,7 +2,7 @@ import os
 import pathlib
 import sys
 import logging
-from dulwich import porcelain
+import delegator
 
 confg = None
 log = logging.getLogger()
@@ -54,24 +54,22 @@ def clone_repos(base_dir: str, repos: list) -> None:
         # If the repo exists, delete it, we'll clone it clean and then create the path for us to clone into
         if os.path.exists(repo_loc):
             log.debug("Repo exists, pulling %s", repo_loc)
-            try:
-                porcelain.pull(repo_loc)
-            except porcelain.Error as exc:
-                log.error("Exception pulling %s. Error: %s", repo_loc, str(exc))
+            gitpull = delegator.run(f"git -C {repo_loc} pull")
+            if gitpull.err != "":
+                log.error("Error while pulling in %s. Error: %s", repo_loc, gitpull.err)
+                print(f"Error {gitpull.err}")
+            print(gitpull.out)
             break
 
         pathlib.Path(repo_loc).mkdir(parents=True, exist_ok=True)
-        try:
-            repo = porcelain.clone(repo_config[1], repo_loc)
-            git_config = repo.get_config()
-            git_config.set(('branch', repo_config[2]), 'remote', 'origin')
-            git_config.set(('branch', repo_config[2]), 'merge', f"refs/heads/{repo_config[2]}")
-            git_config.write_to_path()
-            porcelain.pull(repo_loc)
-            log.info(f"Successfully cloned {repo_config[0]}/{repo_config[2]} to {repo_loc} from {repo_config[1]}")
-        except porcelain.Error as exception:
-            log.error(f"Exception cloning {repo_config[0]} from {repo_config[1]}. Error: {str(exception)}")
 
+        gitcmd = delegator.run(f"git clone -b {repo_config[2]} --single-branch {repo_config[1]} {repo_loc}")
+        if gitcmd.err != "":
+            print(gitcmd.err)
+            log.error("Error while cloning %s/%s to %s. Error: %s", repo_config[0], repo_config[2], repo_loc, gitcmd.err)
+        else:
+            print(gitcmd.out)
+            log.info(f"Successfully cloned {repo_config[0]}/{repo_config[2]} to {repo_loc} from {repo_config[1]}")
 
 if __name__ == '__main__':
     config = load_config()

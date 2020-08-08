@@ -2,3 +2,4 @@
 errbot[slack]
 python-decouple
 wrapt
+schedule
