@@ -45,6 +45,7 @@ def clone_repos(base_dir: str, repos: list) -> None:
     if len(repos) == 0:
         return
 
+    print(repos)
     for repo_config in repos:
         print(repo_config)
         repo_config = repo_config.split(',')
@@ -59,16 +60,16 @@ def clone_repos(base_dir: str, repos: list) -> None:
                 log.error("Error while pulling in %s. Error: %s", repo_loc, gitpull.err)
                 print(f"Error {gitpull.err}")
             print(gitpull.out)
-            break
+            continue
 
         pathlib.Path(repo_loc).mkdir(parents=True, exist_ok=True)
 
         gitcmd = delegator.run(f"git clone -b {repo_config[2]} --single-branch {repo_config[1]} {repo_loc}")
-        if gitcmd.err != "":
+        if gitcmd.return_code != 0:
             print(gitcmd.err)
             log.error("Error while cloning %s/%s to %s. Error: %s", repo_config[0], repo_config[2], repo_loc, gitcmd.err)
         else:
-            print(gitcmd.out)
+            print(f"Successful clone to {gitcmd.out}")
             log.info(f"Successfully cloned {repo_config[0]}/{repo_config[2]} to {repo_loc} from {repo_config[1]}")
 
 if __name__ == '__main__':
