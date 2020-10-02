@@ -3,11 +3,14 @@ import pathlib
 import sys
 import logging
 import delegator
+import json
+from typing import Dict, List
 
 confg = None
 log = logging.getLogger()
+log.setLevel(logging.getLevelName(os.environ.get("LOG_LEVEL", "ERROR").upper()))
 
-def load_config():
+def _load_config():
     global config
     pre_config_log = logging.getLogger()
     execution_dir = os.getcwd()
@@ -30,26 +33,32 @@ def load_config():
     config = loaded_config
     return loaded_config
 
+def _read_plugin_file(file_path:str) -> Dict:
+    """
+    Reads in a plugin file, json loads it, and applies defaults
+    """
+    with open(file_path, 'r') as stream:
+        plugins = json.load(stream)
 
-def clone_repos(base_dir: str, repos: list) -> None:
+    return plugins
+
+def _clone_git_repos(base_dir: str, repos: List[Dict[str, str]]) -> None:
     """
     Clones repositories from a list (repos) into a directory (base_dir)
-    Args:
-        base_dir (str):
-        repos:
-
-    Returns:
 
     """
     # if we don't have any configured repos, nothing to clone
     if len(repos) == 0:
         return
 
-    print(repos)
-    for repo_config in repos:
-        print(repo_config)
-        repo_config = repo_config.split(',')
-        repo_loc = f"{base_dir}/{repo_config[0]}"
+    log.debug("Repos to clone: %s", repos)
+    for repo in repos:
+        log.debug("This repo: %s", repo)
+
+        if 'branch' not in repo:
+            repo['branch'] = 'master'
+
+        repo_loc = f"{base_dir}/{repo['name']}"
         log.debug("repo_location: %s", repo_loc)
         print(repo_loc)
         # If the repo exists, delete it, we'll clone it clean and then create the path for us to clone into
@@ -64,15 +73,16 @@ def clone_repos(base_dir: str, repos: list) -> None:
 
         pathlib.Path(repo_loc).mkdir(parents=True, exist_ok=True)
 
-        gitcmd = delegator.run(f"git clone -b {repo_config[2]} --single-branch {repo_config[1]} {repo_loc}")
+        gitcmd = delegator.run(f"git clone -b {repo['branch']} --single-branch {repo['url']} {repo_loc}")
         if gitcmd.return_code != 0:
             print(gitcmd.err)
-            log.error("Error while cloning %s/%s to %s. Error: %s", repo_config[0], repo_config[2], repo_loc, gitcmd.err)
+            log.error("Error while cloning to %s. Repo: %s Error: %s", repo_loc, repo, gitcmd.err)
         else:
             print(f"Successful clone to {gitcmd.out}")
-            log.info(f"Successfully cloned {repo_config[0]}/{repo_config[2]} to {repo_loc} from {repo_config[1]}")
+            log.info(f"Successfully cloned {repo['name']}/{repo['branch']} to {repo_loc} from {repo['url']}")
 
 if __name__ == '__main__':
-    config = load_config()
-    clone_repos(base_dir=config.BOT_EXTRA_PLUGIN_DIR,
-                repos=config.REPOS_LIST)
+    config = _load_config()
+    plugins = _read_plugin_file(config.PLUGINS_FILE)
+    _clone_git_repos(base_dir=config.BOT_EXTRA_PLUGIN_DIR,
+                     repos=plugins['git_repos'])
