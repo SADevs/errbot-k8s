@@ -12,6 +12,12 @@ eval "/errbot/venv/bin/python /errbot/install_plugins.py"
 echo "Activate virtual environment"
 source /errbot/venv/bin/activate
 
+EXTRA_REQUIREMENTS_FILE_PATH=${EXTRA_REQUIREMENTS_FILE:-/config/extra-requirements.txt}
+# install any extra requirements
+if [[ -f "$EXTRA_REQUIREMENTS_FILE_PATH" ]]; then
+    /errbot/venv/bin/pip install -r $EXTRA_REQUIREMENTS_FILE_PATH
+fi
+
 # Run bot
 echo "Executing: $ERRBOT"
 eval $ERRBOT
