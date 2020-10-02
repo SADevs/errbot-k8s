@@ -80,5 +80,5 @@ if ac_defaults_file != "":
 # Instead of using the Errbot plugin manager, implement our own
 # REPOS_LIST is used by the bootstrap script that gets called on bot startup to clone down our repos out of band
 # before errbot gets started
-# PLUGIN_REPOS should be a string like "repo-name,repo-url,branch;repo2-name,repo2-url,branch;"
-REPOS_LIST = os.environ.get("PLUGIN_REPOS", "").rstrip(";").split(";")
+PLUGINS_FILE = os.environ.get("PLUGINS_FILE", "/config/plugins.json")
+# The
