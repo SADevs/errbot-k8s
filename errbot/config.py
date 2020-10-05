@@ -13,6 +13,7 @@ BOT_IDENTITY = {
     'token': os.environ.get("SLACK_TOKEN")
 }
 
+CORE_PLUGINS = tuple(os.environ.get("BOT_CORE_PLUGINS", "ACls,Help,Utils").split(","))
 CORE_PLUGINS = ('ACLs', 'Help', 'Utils')
 
 BOT_DIR = os.environ.get("BOT_DIR", r'/errbot')
