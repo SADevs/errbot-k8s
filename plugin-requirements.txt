@@ -1,5 +1,6 @@
 # add any requirements for plugins in here and they'll get installed in the base docker image to speed up bot start time
 slackclient>=1.3.2,<2.0.0
-python-decouple
-wrapt
-schedule
+python-decouple>=3.3
+wrapt>=1.12.1
+SQLAlchemy>=1.3.19
+APScheduler>=3.6.3

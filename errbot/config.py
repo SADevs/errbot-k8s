@@ -20,6 +20,7 @@ BOT_DATA_DIR = os.path.join(BOT_DIR, "data")
 os.makedirs(BOT_DATA_DIR, exist_ok=True)
 BOT_EXTRA_PLUGIN_DIR = os.path.join(BOT_DIR, "plugins")
 os.makedirs(BOT_EXTRA_PLUGIN_DIR, exist_ok=True)
+BOT_EXTRA_BACKEND_DIR = BOT_EXTRA_PLUGIN_DIR
 BOT_LOG_FILE = os.path.join(BOT_DIR, "errbot.log")
 
 # use pip to install any requirements for plugins
@@ -34,7 +35,7 @@ BOT_ADMINS = tuple(os.environ.get("BOT_ADMINS", "").split(","))
 # Allow bot to execute commands async
 BOT_ASYNC = True
 # Set our poolsize to 5 threads, default is 3. Tweak this higher if we start running long running bot commands
-BOT_ASYNC_POOLSIZE = 5
+BOT_ASYNC_POOLSIZE = int(os.environ.get('BOT_ASYNC_POOLSIZE', '5'))
 
 # command prefix. This will be expected in front of every command.
 # For example, if your command is "help" and your prefix is set to "./" the full command is "./help"
@@ -81,4 +82,3 @@ if ac_defaults_file != "":
 # REPOS_LIST is used by the bootstrap script that gets called on bot startup to clone down our repos out of band
 # before errbot gets started
 PLUGINS_FILE = os.environ.get("PLUGINS_FILE", "/config/plugins.json")
-# The
