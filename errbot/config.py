@@ -20,6 +20,7 @@ BOT_DATA_DIR = os.path.join(BOT_DIR, "data")
 os.makedirs(BOT_DATA_DIR, exist_ok=True)
 BOT_EXTRA_PLUGIN_DIR = os.path.join(BOT_DIR, "plugins")
 os.makedirs(BOT_EXTRA_PLUGIN_DIR, exist_ok=True)
+BOT_EXTRA_BACKEND_DIR = BOT_EXTRA_PLUGIN_DIR
 BOT_LOG_FILE = os.path.join(BOT_DIR, "errbot.log")
 
 # use pip to install any requirements for plugins
