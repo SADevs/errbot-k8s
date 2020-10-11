@@ -1,2 +1,2 @@
-errbot==6.1.4
+errbot==6.1.5
 delegator.py>=0.1.1
