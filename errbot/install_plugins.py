@@ -85,4 +85,7 @@ if __name__ == '__main__':
     config = _load_config()
     plugins = _read_plugin_file(config.PLUGINS_FILE)
     _clone_git_repos(base_dir=config.BOT_EXTRA_PLUGIN_DIR,
-                     repos=plugins['git_repos'])
+                     repos=plugins['plugins']['git_repos'])
+    if 'backends' in plugins:
+        _clone_git_repos(base_dir=config.BOT_EXTRA_BACKEND_DIR,
+                         repos=plugins['backends']['git_repos'])
