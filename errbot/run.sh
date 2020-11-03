@@ -18,7 +18,7 @@ if [[ -f "$EXTRA_REQUIREMENTS_FILE_PATH" ]]; then
     /errbot/venv/bin/pip install -r $EXTRA_REQUIREMENTS_FILE_PATH
 fi
 
-if [[ -z "${MONO_PLUGIN_REQ_INSTALL}" ]]
+if [[ -z "${MONO_PLUGIN_REQ_INSTALL}" ]]; then
   pip install -r $(find -name "requirements.txt" | sed ':a;N;$!ba;s/\n/ -r /g')
   export INSTALL_DEPS=False
 fi
