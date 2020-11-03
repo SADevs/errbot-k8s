@@ -4,7 +4,7 @@ set +x
 set -Eeuo pipefail
 
 ERRBOT="/errbot/venv/bin/errbot"
-
+RUN_MONO_INSTALL=${MONO_PLUGIN_REQ_INSTALL:-False}
 # Execute code to install plugins repos
 eval "/errbot/venv/bin/python /errbot/install_plugins.py"
 
@@ -18,7 +18,7 @@ if [[ -f "$EXTRA_REQUIREMENTS_FILE_PATH" ]]; then
     /errbot/venv/bin/pip install -r $EXTRA_REQUIREMENTS_FILE_PATH
 fi
 
-if [ ! -z $MONO_PLUGIN_REQ_INSTALL ]; then
+if [[ "$RUN_MONO_INSTALL" = "True" ]]; then
   pip install -r $(find -name "requirements.txt" | sed ':a;N;$!ba;s/\n/ -r /g')
   export INSTALL_DEPS=False
 fi
