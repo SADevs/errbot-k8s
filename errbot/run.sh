@@ -19,7 +19,7 @@ if [[ -f "$EXTRA_REQUIREMENTS_FILE_PATH" ]]; then
 fi
 
 if [[ "$RUN_MONO_INSTALL" = "True" ]]; then
-  pip install -r $(find -name "requirements.txt" | sed ':a;N;$!ba;s/\n/ -r /g')
+  pip install -r $(find /k8s-volume/plugins/ -name "requirements.txt" /k8s/| sed ':a;N;$!ba;s/\n/ -r /g')
   export INSTALL_DEPS=False
 fi
 
