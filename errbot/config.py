@@ -25,7 +25,7 @@ os.makedirs(BOT_EXTRA_BACKEND_DIR, exist_ok=True)
 BOT_LOG_FILE = os.path.join(BOT_DIR, "errbot.log")
 
 # use pip to install any requirements for plugins
-AUTOINSTALL_DEPS = True
+AUTOINSTALL_DEPS = bool(os.environ.get("INSTALL_DEPS", "True"))
 
 # set our logging level. Follows python standard logging levels
 BOT_LOG_LEVEL = logging.getLevelName(os.environ.get("LOG_LEVEL", "ERROR").upper())

@@ -18,6 +18,11 @@ if [[ -f "$EXTRA_REQUIREMENTS_FILE_PATH" ]]; then
     /errbot/venv/bin/pip install -r $EXTRA_REQUIREMENTS_FILE_PATH
 fi
 
+if [[ -z "${MONO_PLUGIN_REQ_INSTALL}" ]]
+  pip install -r $(find -name "requirements.txt" | sed ':a;N;$!ba;s/\n/ -r /g')
+  export INSTALL_DEPS=False
+fi
+
 # Run bot
 echo "Executing: $ERRBOT"
 eval $ERRBOT
