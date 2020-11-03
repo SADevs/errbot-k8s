@@ -14,7 +14,7 @@ RUN apt-get update && \
     . /errbot/venv/bin/activate && \
     /errbot/venv/bin/pip install --no-cache-dir -r /requirements.txt && \
     /errbot/venv/bin/pip install --no-cache-dir -r /plugin-requirements.txt && \
-    install -d -o root -g root -m 0800 /root/.ssh && \
+    install -d -o root -g root -m 0600 /root/.ssh && \
     apt-get autoremove --purge -y software-properties-common && \
     rm -rf /*requirements.txt && \
     rm -rf /var/lib/apt/lists/*
